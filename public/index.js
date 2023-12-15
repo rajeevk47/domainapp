@@ -187,7 +187,7 @@ function animate(){
                    }
                  }
                )
-            ){moving =false ; break}
+            ){moving =false;players[socket.id].moving=false ; break}
         }
     if(moving){
         players[socket.id].position.y-=5
@@ -208,7 +208,7 @@ function animate(){
                  }
                )
             ){
-                moving =false
+                moving =false;players[socket.id].moving=false ;
                 break
             }
                 }
@@ -231,7 +231,7 @@ function animate(){
                  }
                )
             ){
-                moving =false
+                moving =false;players[socket.id].moving=false ;
                 break
             }
                 }
@@ -254,7 +254,7 @@ function animate(){
                  }
                )
             ){
-                moving =false
+                moving =false;players[socket.id].moving=false ;
                 break
             }
                 }
