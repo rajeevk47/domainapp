@@ -4,7 +4,7 @@
     "socket.io": "4.6.1",
     "nodemon": "^2.0.20"
   },
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",
     "start": "node app.js"
