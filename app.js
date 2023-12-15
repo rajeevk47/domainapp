@@ -29,14 +29,16 @@ io.on('connection', (socket)=>{
     socket.on('playerlocation',(position)=>{
         players[socket.id].xx = position.x 
         players[socket.id].yy = position.y 
-        // console.log(players)
         io.emit('updatePlayer', players)
         
     })
     socket.on('playersprite',(image)=>{
-        // console.log(image)
         players[socket.id].sprite = image
         io.emit('updatePlayer', players)
+    })
+    socket.on('mute',(condition)=>{
+        players[socket.id].mute = condition || false
+        io.emit('updatePlayer',players)
     })
     
     socket.on('disconnect',(reason)=>{
