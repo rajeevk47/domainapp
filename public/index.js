@@ -2,6 +2,79 @@ const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
 const socket = io(`ws://localhost:3000`)
+
+//===========Agora===========//
+const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+const localTracks={
+    audioTrack : null
+}
+
+let isPlaying = true;
+
+const remoteUsers = {};
+window.remoteUsers = remoteUsers;
+
+const buttonclicked = new Audio
+buttonclicked.src = './data/buttonclicked.mp3'
+const buttonreleased = new Audio
+buttonreleased.src = './data/buttonreleased.wav'
+
+const muteButton = document.getElementById("mute");
+const uid = Math.floor(Math.random() * 1000000);
+
+muteButton.addEventListener("click", () => {
+  if (isPlaying) {
+    buttonreleased.play()
+    localTracks.audioTrack.setEnabled(false);
+    muteButton.innerText = "unmute";
+    socket.emit("mute", true);
+  } else {
+    buttonclicked.play()
+    localTracks.audioTrack.setEnabled(true);
+    muteButton.innerText = "mute";
+    socket.emit("mute", false);
+  }
+  isPlaying = !isPlaying;
+});
+
+const options={
+    appid: '9d20889cfe1449229d2057caff504c48',
+    channel:'Game',
+    uid,
+    token:null
+}
+
+async function subscribe(user, mediaType) {
+    await client.subscribe(user, mediaType);
+    if (mediaType === "audio") {
+      user.audioTrack.play();
+    }
+  }
+  
+  function handleUserPublished(user, mediaType) {
+    const id = user.uid;
+    remoteUsers[id] = user;
+    subscribe(user, mediaType);
+  }
+  
+  function handleUserUnpublished(user) {
+    const id = user.uid;
+    delete remoteUsers[id];
+  }
+  
+  async function join() {
+    socket.emit("voiceId", uid);
+  
+    client.on("user-published", handleUserPublished);
+    client.on("user-unpublished", handleUserUnpublished);
+  
+    await client.join(options.appid, options.channel, options.token || null, uid);
+    localTracks.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+  
+    await client.publish(Object.values(localTracks));
+  }
+  
+  join();
 //==========================//
 
 canvas.width = 1324
@@ -46,7 +119,10 @@ const playerleftImage = new Image()
 playerleftImage.src = './img/playerLeft.png'
 const playerrightImage = new Image()
 playerrightImage.src = './img/playerRight.png'
-
+const walksound = new Audio
+walksound.src = './data/walksound.mp3'
+const microphone = new Image()
+microphone.src = './img/microphone.png'
 //================================//
 
 
@@ -77,27 +153,16 @@ socket.on('updatePlayer', (backendPlayers) => {
                     left: playerleftImage,
                     down: playerdownImage,
                     right: playerrightImage,
-                }
+                },
+                spn : 2
             });
         
         }
         else {
             players[id].position.x = backendPlayer.xx;
             players[id].position.y = backendPlayer.yy;
-            switch(backendPlayer.sprite){
-                case 1:
-                    players[id].image = playerupImage
-                    break
-                case 2:
-                    players[id].image = playerdownImage
-                    break
-                case 3:
-                    players[id].image = playerleftImage
-                    break
-                case 4:
-                    players[id].image = playerrightImage
-                    break
-            }
+            players[id].mute = backendPlayer.mute
+            players[id].spn = backendPlayer.sprite
         }
     }
         
@@ -148,15 +213,30 @@ window.addEventListener('touchend',touchend)
 
 
 function animate(){
-    requestAnimationFrame(animate)
     c.clearRect(0, 0, canvas.width, canvas.height);
+    requestAnimationFrame(animate)
+    
     background.draw();
-
     for (const id in players) {
         const player = players[id];
+        if(player.spn ==3){
+            player.image=player.sprites.left
+        }
+        else if(player.spn ==4){
+            player.image= player.sprites.right
+        }
+        else if(player.spn ==1){
+            player.image= player.sprites.up
+        }
+        else if(player.spn ==2){
+            player.image= player.sprites.down
+        }
         player.draw();
+        if(!players[id].mute){
+            c.drawImage(microphone,players[id].position.x,players[id].position.y)
+        }
     }
-
+    
     // boundaries.forEach(boundary => {boundary.draw()})  //can we used to locate barrier blocks
     
     foreground.draw()
@@ -167,7 +247,7 @@ function animate(){
 //==DEBUG=====//
 // console.log(players[socket.id].width)
 //============//
-
+    walksound.pause()
     if (keys.w.pressed || touchup===true){
         
         players[socket.id].moving = true
@@ -183,7 +263,8 @@ function animate(){
             ){moving =false;players[socket.id].moving=false ; break}
         }
     if(moving){
-        players[socket.id].position.y-=5
+        players[socket.id].position.y-=4
+        walksound.play()
         socket.emit('playerlocation',players[socket.id].position)
         socket.emit('playersprite','1')
 
@@ -207,7 +288,8 @@ function animate(){
             }
                 }
         if(moving){
-            players[socket.id].position.y+=5
+            players[socket.id].position.y+=4
+            walksound.play()
             socket.emit('playerlocation',players[socket.id].position)
             socket.emit('playersprite','2')
 
@@ -230,7 +312,8 @@ function animate(){
             }
                 }
         if(moving){
-            players[socket.id].position.x-=5
+            players[socket.id].position.x-=4
+            walksound.play()
             socket.emit('playerlocation',players[socket.id].position)
             socket.emit('playersprite','3')
 
@@ -254,9 +337,11 @@ function animate(){
                 }
         
         if(moving){
-            players[socket.id].position.x+=5
+            players[socket.id].position.x+=4
+            walksound.play()
             socket.emit('playerlocation',players[socket.id].position)
             socket.emit('playersprite','4')
+
 
         }
     }
