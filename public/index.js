@@ -84,8 +84,6 @@ socket.on('updatePlayer', (backendPlayers) => {
         else {
             players[id].position.x = backendPlayer.xx;
             players[id].position.y = backendPlayer.yy;
-            // console.log(backendPlayer.sprite)
-            // players[id].image = backendPlayer.image
             switch(backendPlayer.sprite){
                 case 1:
                     players[id].image = playerupImage
@@ -141,8 +139,6 @@ const keys = {
     d: {pressed: false}
 }
 
-// const movableitems = [] //  "..." represents every elements in that array
-
 let touchup,touchdown,touchleft,touchright
 
 window.addEventListener('touchstart',touchstart)
@@ -168,9 +164,6 @@ function animate(){
 
     let player = players[socket.id]
     if(!player){return}
-    // player.moving=false
-    // console.log(player)
-
 //==DEBUG=====//
 // console.log(players[socket.id].width)
 //============//
@@ -195,6 +188,7 @@ function animate(){
         socket.emit('playersprite','1')
 
     }
+    
     }
     else if (keys.s.pressed || touchdown===true) {
         players[socket.id].moving=true
