@@ -156,9 +156,12 @@ socket.on('updatePlayer', (backendPlayers) => {
                 },
                 spn : 2
             });
-        
+            // data-score ="${backendPlayer.score}"
+        document.querySelector('#playerlabels').innerHTML+=`<div data-id ="${id}" > ${backendPlayer.username}: ${players[id].score} </div>`
         }
         else {
+            // document.querySelector(`div[data-id="${id}"]`).innerHTML = `${id} : ${backendPlayer.score}`
+            // document.querySelector(`div[data-id="${id}"]`).setAttribute('data-score',backendPlayer.score)
             players[id].position.x = backendPlayer.xx;
             players[id].position.y = backendPlayer.yy;
             players[id].mute = backendPlayer.mute
@@ -168,6 +171,11 @@ socket.on('updatePlayer', (backendPlayers) => {
         
     for(const id in players){
         if(!backendPlayers[id]){
+            const divtodel=document.querySelector(`div[data-id="${id}"]`)
+            divtodel.parentNode.removeChild(divtodel)
+            if(id === socket.id){
+             document.querySelector('#userform').style.display='block'
+            }
             delete players[id]
         }
     }
@@ -353,6 +361,12 @@ animate()
 
 window.addEventListener('keydown', checkkeydown)
 window.addEventListener('keyup',checkkeyup)
+
+document.querySelector('#userform').addEventListener('submit',(e)=>{
+    e.preventDefault()
+    document.querySelector('#userform').style.display = 'none'
+    socket.emit('addusername',(document.querySelector('#userinput').value))
+})
 
 
 
