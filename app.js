@@ -19,12 +19,6 @@ const players = {}
 
 io.on('connection', (socket)=>{
     console.log('A user connected ')
-    players[socket.id] ={
-        xx:662,
-        yy:300
-    }
-    // players[socket.id]={}
-    io.emit('updatePlayer', players)
 
     socket.on('playerlocation',(position)=>{
         players[socket.id].xx = position.x 
@@ -39,6 +33,14 @@ io.on('connection', (socket)=>{
     socket.on('mute',(condition)=>{
         players[socket.id].mute = condition || false
         io.emit('updatePlayer',players)
+    })
+    socket.on('addusername',(username)=>{
+        players[socket.id] ={
+        xx:662,
+        yy:300,
+        username: username
+    }
+    io.emit('updatePlayer', players)
     })
     
     socket.on('disconnect',(reason)=>{
