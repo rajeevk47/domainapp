@@ -1,5 +1,5 @@
 class Sprite {
-    constructor({ position, image, frames = { max: 1} ,sprites,spn}) {
+    constructor({ position, image, frames = { max: 1} ,sprites,spn,score,username}) {
         this.position = position
         this.image = image
         this.frames = {...frames , val:0 , elapsed : 0}
@@ -11,6 +11,8 @@ class Sprite {
         this.sprites = sprites
         this.mute = false
         this.spn = spn
+        this.score = 0
+        this.username = username
     }
     draw() {
         c.drawImage(
