@@ -16,10 +16,8 @@ app.get('/', (req,res)=>{
 
 const players = {}
 
-
 io.on('connection', (socket)=>{
     console.log('A user connected ')
-
     socket.on('playerlocation',(position)=>{
         players[socket.id].xx = position.x 
         players[socket.id].yy = position.y 
@@ -31,7 +29,8 @@ io.on('connection', (socket)=>{
         io.emit('updatePlayer', players)
     })
     socket.on('mute',(condition)=>{
-        players[socket.id].mute = condition || false
+        if(players[socket.id]){
+        players[socket.id].mute = condition || false}
         io.emit('updatePlayer',players)
     })
     socket.on('addusername',(username)=>{
@@ -42,6 +41,17 @@ io.on('connection', (socket)=>{
     }
     io.emit('updatePlayer', players)
     })
+
+    // socket.on('shoot', ({ x, y, angle }) => {
+    //     projectileID++;
+    //     const velocity = {
+    //         x: Math.cos(angle) * 5,
+    //         y: Math.sin(angle) * 5
+    //     }
+    //     backendprojectiles[projectileID] = {
+    //         x, y, velocity, playerID: socket.id
+    //     }
+    // })
     
     socket.on('disconnect',(reason)=>{
         console.log(reason)
@@ -50,6 +60,15 @@ io.on('connection', (socket)=>{
     })
 
 })
+
+// setInterval(() => {
+//     for (const id in backendprojectiles) {
+//         backendprojectiles[id].x += backendprojectiles[id].velocity.x
+//         backendprojectiles[id].y += backendprojectiles[id].velocity.y
+//     }
+//     io.emit('updateprojectiles', backendprojectiles)
+//     io.emit('updatePlayer',players)
+// },15)
 
 server.listen(port, ()=> {
     console.log(`App is listening on ${port}`)

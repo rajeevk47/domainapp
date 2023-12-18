@@ -1,5 +1,5 @@
 class Sprite {
-    constructor({ position, image, frames = { max: 1} ,sprites,spn,score,username}) {
+    constructor({ position, image, frames = { max: 1} ,sprites,spn,score,username,id}) {
         this.position = position
         this.image = image
         this.frames = {...frames , val:0 , elapsed : 0}
@@ -13,6 +13,7 @@ class Sprite {
         this.spn = spn
         this.score = 0
         this.username = username
+        this.id = id
     }
     draw() {
         c.drawImage(
@@ -38,6 +39,8 @@ class Sprite {
     } 
 }
 
+//======================================================================================================================//
+
 class Boundary {
     static width = 24;
     static height =24;
@@ -51,3 +54,5 @@ class Boundary {
         c.fillRect(this.position.x, this.position.y, this.width, this.height)
     }
 }
+
+//========================================================================================================================//

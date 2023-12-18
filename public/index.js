@@ -3,82 +3,13 @@ const c = canvas.getContext('2d')
 
 const socket = io(`ws://localhost:3000`)
 
-//===========Agora===========//
-const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-const localTracks={
-    audioTrack : null
-}
-
-let isPlaying = true;
-
-const remoteUsers = {};
-window.remoteUsers = remoteUsers;
-
-const buttonclicked = new Audio
-buttonclicked.src = './data/buttonclicked.mp3'
-const buttonreleased = new Audio
-buttonreleased.src = './data/buttonreleased.wav'
-
-const muteButton = document.getElementById("mute");
-const uid = Math.floor(Math.random() * 1000000);
-
-muteButton.addEventListener("click", () => {
-  if (isPlaying) {
-    buttonreleased.play()
-    localTracks.audioTrack.setEnabled(false);
-    muteButton.innerText = "unmute";
-    socket.emit("mute", true);
-  } else {
-    buttonclicked.play()
-    localTracks.audioTrack.setEnabled(true);
-    muteButton.innerText = "mute";
-    socket.emit("mute", false);
-  }
-  isPlaying = !isPlaying;
-});
-
-const options={
-    appid: '9d20889cfe1449229d2057caff504c48',
-    channel:'Game',
-    uid,
-    token:null
-}
-
-async function subscribe(user, mediaType) {
-    await client.subscribe(user, mediaType);
-    if (mediaType === "audio") {
-      user.audioTrack.play();
-    }
-  }
-  
-  function handleUserPublished(user, mediaType) {
-    const id = user.uid;
-    remoteUsers[id] = user;
-    subscribe(user, mediaType);
-  }
-  
-  function handleUserUnpublished(user) {
-    const id = user.uid;
-    delete remoteUsers[id];
-  }
-  
-  async function join() {
-    socket.emit("voiceId", uid);
-  
-    client.on("user-published", handleUserPublished);
-    client.on("user-unpublished", handleUserUnpublished);
-  
-    await client.join(options.appid, options.channel, options.token || null, uid);
-    localTracks.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-  
-    await client.publish(Object.values(localTracks));
-  }
-  
-  join();
+//===========Agora=========//
+Agora()
 //==========================//
 
-canvas.width = 1324
-canvas.height = 600 
+const devicepixelratio = window.devicePixelRatio || 1
+canvas.width = innerWidth * devicepixelratio*1.1
+canvas.height = innerHeight * devicepixelratio/1.25
 c.fillStyle = 'white'
 c.fillRect(0, 0, canvas.width, canvas.height)
 
@@ -125,7 +56,7 @@ const microphone = new Image()
 microphone.src = './img/microphone.png'
 //================================//
 
-
+const projectiles = {}
 
 
 //=============Player sprite=============//
@@ -135,6 +66,8 @@ const players = []
 let other =[]
 const canvasx = canvas.width / 2 - (playerdownImage.width / 4) / 2
 const canvasy = canvas.height / 2 - playerdownImage.height / 2
+
+
 socket.on('updatePlayer', (backendPlayers) => {
     for (const id in backendPlayers) {
         const backendPlayer = backendPlayers[id];
@@ -160,8 +93,6 @@ socket.on('updatePlayer', (backendPlayers) => {
         document.querySelector('#playerlabels').innerHTML+=`<div data-id ="${id}" > ${backendPlayer.username}: ${players[id].score} </div>`
         }
         else {
-            // document.querySelector(`div[data-id="${id}"]`).innerHTML = `${id} : ${backendPlayer.score}`
-            // document.querySelector(`div[data-id="${id}"]`).setAttribute('data-score',backendPlayer.score)
             players[id].position.x = backendPlayer.xx;
             players[id].position.y = backendPlayer.yy;
             players[id].mute = backendPlayer.mute
@@ -220,44 +151,43 @@ window.addEventListener('touchend',touchend)
 
 
 
-function animate(){
+function animate() {
     c.clearRect(0, 0, canvas.width, canvas.height);
     requestAnimationFrame(animate)
-    
+
     background.draw();
     for (const id in players) {
         const player = players[id];
-        if(player.spn ==3){
-            player.image=player.sprites.left
+        if (player.spn == 3) {
+            player.image = player.sprites.left
         }
-        else if(player.spn ==4){
-            player.image= player.sprites.right
+        else if (player.spn == 4) {
+            player.image = player.sprites.right
         }
-        else if(player.spn ==1){
-            player.image= player.sprites.up
+        else if (player.spn == 1) {
+            player.image = player.sprites.up
         }
-        else if(player.spn ==2){
-            player.image= player.sprites.down
+        else if (player.spn == 2) {
+            player.image = player.sprites.down
         }
         player.draw();
-        if(!players[id].mute){
-            c.drawImage(microphone,players[id].position.x,players[id].position.y)
+        if (!players[id].mute) {
+            c.drawImage(microphone, players[id].position.x, players[id].position.y)
         }
     }
-    
+
     // boundaries.forEach(boundary => {boundary.draw()})  //can we used to locate barrier blocks
-    
     foreground.draw()
     let moving = true
 
     let player = players[socket.id]
-    if(!player){return}
+    if (!player) { return }
+
 //==DEBUG=====//
 // console.log(players[socket.id].width)
 //============//
     walksound.pause()
-    if (keys.w.pressed || touchup===true){
-        
+    if (keys.w.pressed || touchup === true) {
         players[socket.id].moving = true
         players[socket.id].image = players[socket.id].sprites.up
         for(let i=0 ;i <boundaries.length;i++){
