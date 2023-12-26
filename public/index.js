@@ -413,16 +413,16 @@ function animate() {
     if (keys.w.pressed || touchup === true) {
         players[socket.id].moving = true
         players[socket.id].image = players[socket.id].sprites.up
-        for(let i=0 ;i <boundaries.length;i++){
-            const boundary = boundaries[i]
-            if(rectangularcollision({
-                rectangle1: player,
-                rectangle2: {...boundary, position:{x:boundary.position.x ,y:boundary.position.y+5}
-                   }
-                 }
-               )
-            ){moving =false;players[socket.id].moving=false ; break}
-        }
+        // for(let i=0 ;i <boundaries.length;i++){
+        //     const boundary = boundaries[i]
+            // if(rectangularcollision({
+            //     rectangle1: player,
+            //     rectangle2: {...boundary, position:{x:boundary.position.x ,y:boundary.position.y+5}
+            //        }
+            //      }
+            //    )
+            // ){moving =false;players[socket.id].moving=false ; break}
+        // }
     if(moving){
         players[socket.id].position.y-=5
         walksound.play()
@@ -435,19 +435,19 @@ function animate() {
     else if (keys.s.pressed || touchdown===true) {
         players[socket.id].moving=true
         players[socket.id].image = players[socket.id].sprites.down
-        for(let i=0 ;i <boundaries.length;i++){
-            const boundary = boundaries[i]
-            if(rectangularcollision({
-                rectangle1: players[socket.id],
-                rectangle2: {...boundary, position:{x:boundary.position.x ,y:boundary.position.y-5}
-                   }
-                 }
-               )
-            ){
-                moving =false;players[socket.id].moving=false ;
-                break
-            }
-                }
+        // for(let i=0 ;i <boundaries.length;i++){
+        //     const boundary = boundaries[i]
+            // if(rectangularcollision({
+            //     rectangle1: players[socket.id],
+            //     rectangle2: {...boundary, position:{x:boundary.position.x ,y:boundary.position.y-5}
+            //        }
+            //      }
+            //    )
+            // ){
+            //     moving =false;players[socket.id].moving=false ;
+            //     break
+            // }
+                // }
         if(moving){
             players[socket.id].position.y+=5
             walksound.play()
@@ -459,19 +459,19 @@ function animate() {
     else if (keys.a.pressed|| touchleft===true) {
         players[socket.id].moving=true
         players[socket.id].image = players[socket.id].sprites.left
-        for(let i=0 ;i <boundaries.length;i++){
-            const boundary = boundaries[i]
-            if(rectangularcollision({
-                rectangle1: players[socket.id],
-                rectangle2: {...boundary, position:{x:boundary.position.x+5,y:boundary.position.y}
-                   }
-                 }
-               )
-            ){
-                moving =false;players[socket.id].moving=false ;
-                break
-            }
-                }
+        // for(let i=0 ;i <boundaries.length;i++){
+        //     const boundary = boundaries[i]
+            // if(rectangularcollision({
+            //     rectangle1: players[socket.id],
+            //     rectangle2: {...boundary, position:{x:boundary.position.x+5,y:boundary.position.y}
+            //        }
+            //      }
+            //    )
+            // ){
+            //     moving =false;players[socket.id].moving=false ;
+            //     break
+            // }
+                // }
         if(moving){
             players[socket.id].position.x-=5
             walksound.play()
@@ -483,19 +483,19 @@ function animate() {
     else if (keys.d.pressed|| touchright===true) {
         players[socket.id].moving=true
         players[socket.id].image=players[socket.id].sprites.right
-        for(let i=0 ;i <boundaries.length;i++){
-            const boundary = boundaries[i]
-            if(rectangularcollision({
-                rectangle1: players[socket.id],
-                rectangle2: {...boundary, position:{x:boundary.position.x-5,y:boundary.position.y}
-                   }
-                 }
-               )
-            ){
-                moving =false;players[socket.id].moving=false ;
-                break
-            }
-                }
+        // for(let i=0 ;i <boundaries.length;i++){
+        //     const boundary = boundaries[i]
+            // if(rectangularcollision({
+            //     rectangle1: players[socket.id],
+            //     rectangle2: {...boundary, position:{x:boundary.position.x-5,y:boundary.position.y}
+            //        }
+            //      }
+            //    )
+            // ){
+            //     moving =false;players[socket.id].moving=false ;
+            //     break
+            // }
+                // }
         
         if(moving){
             players[socket.id].position.x+=5
