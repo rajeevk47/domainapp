@@ -288,7 +288,7 @@ function animate() {
     background.drawroom();
     c.drawImage(Hotbar,10,60,80,400)
     inv.drawitems()
-    c.drawImage(Blink,442,205,20,20)
+    // c.drawImage(Blink,442,205,20,20)
 
     for(const id in projectiles){
         const Projectile=projectiles[id]
