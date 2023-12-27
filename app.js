@@ -77,8 +77,8 @@ io.on('connection', (socket)=>{
     socket.on('shoot', ({ x, y, angle }) => {
         projectileID++;
         const velocity = {
-            x: Math.cos(angle) * 2,
-            y: Math.sin(angle) * 2
+            x: Math.cos(angle) * 20,
+            y: Math.sin(angle) * 20
         }
         backendprojectiles[projectileID] = {
             x, y, velocity, playerID: socket.id
