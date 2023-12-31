@@ -1,14 +1,17 @@
 
 class Rooms{
-    constructor({position,ratio,id}){
+    constructor({position,ratio,id,image}){
         this.position=position
         this.ratio=ratio
         this.id=id
+        this.image=image
         
     }
-    drawroom(){
-        // console.log(this.id)
-        c.drawImage(images[this.id],this.position.x,this.position.y,this.ratio.x,this.ratio.y)
+    drawroom(x,y){
+        c.drawImage(images[this.id],this.position.x-x,this.position.y-y,this.ratio.x,this.ratio.y)
+    }
+    drawforeground(x,y,image){
+        c.drawImage(image,this.position.x-x,this.position.y-y,this.ratio.x,this.ratio.y)
     }
 }
 
