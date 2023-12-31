@@ -17,15 +17,15 @@ class Sprite {
         this.xp=xp
         this.roomid=roomid
     }
-    draw() {
+    draw(x,y) {
         c.drawImage(
             this.image,
             this.frames.val*36,
             0,
             this.image.width / this.frames.max,
             this.image.height,
-            this.position.x,
-            this.position.y,
+            this.position.x-x,
+            this.position.y-y,
             this.image.width / this.frames.max,
             this.image.height
             )
