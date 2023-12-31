@@ -1,76 +1,50 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
-
 const socket = io()
 
-//===========Agora=========//
 Agora()
-//==========================//
 
 // const devicepixelratio = window.devicePixelRatio || 1
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 c.fillStyle = 'white'
-c.fillRect(0, 0, canvas.width, canvas.height)
-
+c.fillRect(30, 0, canvas.width, canvas.height)
 //=========================//
 const offset = {x: 100,y : 0}//Offset to the map
 
-//==========Loading inmages=========//
+//==========Loading images=========//
+const image = new Image();image.src = './img/bg.png'
+const bgimage=new Image();bgimage.src = './img/background1.png'
+const Foreground1 = new Image();Foreground1.src = './img/foreground1.png'
+const Foreground0 = new Image();Foreground0.src = './img/foreground0.png'
 
-const image = new Image()
-image.src = './img/bg.png'
-const bgimage=new Image()
-bgimage.src = './img/background1.png'
-const playerdownImage = new Image()
-playerdownImage.src = './img/Playersprite/playerDown.png'
-const Foreground = new Image()
-Foreground.src = './img/foreground.png'
-const playerupImage = new Image()
-playerupImage.src = './img/Playersprite/playerUp.png'
-const playerleftImage = new Image()
-playerleftImage.src = './img/Playersprite/playerLeft.png'
-const playerrightImage = new Image()
-playerrightImage.src = './img/Playersprite/playerRight.png'
-const Blink = new Image()
-Blink.src = './img/blink.png'
-const walksound = new Audio
-walksound.src = './data/audio/walksound.mp3'
-const laser_gun = new Audio
-laser_gun.src= './data/audio/laser-gun.mp3'
-const shotgun = new Audio
-shotgun.src= './data/audio/gun.mp3'
-const microphone = new Image()
-microphone.src = './img/Playersprite/microphone.png'
-const Bullets =new Image()
-Bullets.src='./img/Bullets.png'
-const Hotbar =new Image()
-Hotbar.src='./img/Hotbar.png'
-const Bulletsforhotbar =new Image()
-Bulletsforhotbar.src='./img/Bulletscombine.png'
+const playerdownImage = new Image();playerdownImage.src = './img/Playersprite/playerDown.png'
+const playerupImage = new Image();playerupImage.src = './img/Playersprite/playerUp.png'
+const playerleftImage = new Image();playerleftImage.src = './img/Playersprite/playerLeft.png'
+const playerrightImage = new Image();playerrightImage.src = './img/Playersprite/playerRight.png'
+const Blink = new Image();Blink.src = './img/blink.png'
+const microphone = new Image();microphone.src = './img/Playersprite/microphone.png'
+const Bullets =new Image();Bullets.src='./img/Bullets.png'
+const Hotbar =new Image();Hotbar.src='./img/Hotbar.png'
+const Bulletsforhotbar =new Image();Bulletsforhotbar.src='./img/Bulletscombine.png'
 
-const healthbar1 =new Image()
-healthbar1.src='./img/Health/meter_bar_center-repeating_blue.png'
-const healthbar2 =new Image()
-healthbar2.src='./img/Health/meter_bar_holder_center-repeating_blue.png'
-const healthbar4 =new Image()
-healthbar4.src='./img/Health/meter_bar_holder_right_edge_blue.png'
-const healthbar7 =new Image()
-healthbar7.src='./img/Health/meter_icon_holder_blue.png'
-const healthbaricon =new Image()
-healthbaricon.src='./img/Health/health.png'
+const healthbar1 =new Image();healthbar1.src='./img/Health/meter_bar_center-repeating_blue.png'
+const healthbar2 =new Image();healthbar2.src='./img/Health/meter_bar_holder_center-repeating_blue.png'
+const healthbar4 =new Image();healthbar4.src='./img/Health/meter_bar_holder_right_edge_blue.png'
+const healthbar7 =new Image();healthbar7.src='./img/Health/meter_icon_holder_blue.png'
+const healthbaricon =new Image();healthbaricon.src='./img/Health/health.png'
 
-const Resbar1 =new Image()
-Resbar1.src='./img/Resistance/meter_bar_center-repeating_purple.png'
-const Resbar2 =new Image()
-Resbar2.src='./img/Resistance/meter_bar_holder_center-repeating_purple.png'
-const Resbar3 =new Image()
-Resbar3.src='./img/Resistance/meter_bar_holder_right_edge_purple.png'
-const Resbar4 =new Image()
-Resbar4.src='./img/Resistance/meter_icon_holder_purple.png'
-const Resbaricon =new Image()
-Resbaricon.src='./img/Resistance/sheild.png'
-
+const Resbar1 =new Image();Resbar1.src='./img/Resistance/meter_bar_center-repeating_purple.png'
+const Resbar2 =new Image();Resbar2.src='./img/Resistance/meter_bar_holder_center-repeating_purple.png'
+const Resbar3 =new Image();Resbar3.src='./img/Resistance/meter_bar_holder_right_edge_purple.png'
+const Resbar4 =new Image();Resbar4.src='./img/Resistance/meter_icon_holder_purple.png'
+const Resbaricon =new Image();Resbaricon.src='./img/Resistance/sheild.png'
+//=============================================//
+//============Loading audio====================//
+const walksound = new Audio;walksound.src = './data/audio/walksound.mp3'
+const laser_gun = new Audio;laser_gun.src= './data/audio/laser-gun.mp3'
+const shotgun = new Audio;shotgun.src= './data/audio/gun.mp3'
+//=============================================//
 
 //=============Abilties================//
 
@@ -116,21 +90,23 @@ const images =[bgimage,image]
 const background = new Rooms({
     position: {
         x: offset.x,
-        y: offset.y 
+        y: offset.y
     },
-    image: image,
     ratio:{
         x:1430,
         y:760
     },
     id:1
 })
-const foreground = new Sprite({
+const foreground = new Rooms({
     position: {
         x: offset.x,
         y: offset.y
     },
-    image: Foreground
+    ratio:{
+        x:1430,
+        y:760
+    }
 })
 
 //================================//
@@ -145,24 +121,22 @@ const projectiles = {}
 
 const players = []
 let other =[]
-const canvasx = canvas.width / 2 - (playerdownImage.width / 4) / 2
-const canvasy = canvas.height / 2 - playerdownImage.height / 2
-
-
-
 
 socket.on('updateprojectiles', (backendprojectiles)=>{
     for(const id in backendprojectiles){
+    if(!players[socket.id]){return}
     const backendprojectile = backendprojectiles[id]
+    // if(players[socket.id].roomid==players[backendprojectile.playerID].roomid){
     if(!projectiles[id]){
         projectiles[id]=new Projectile({
            position:{ 
             x:backendprojectile.x,
             y:backendprojectile.y},
-           image:Bullets,
-           width:8,
-           height:8,
-           id:mousewheelc
+            image:Bullets,
+            width:8,
+            height:8,
+            id:backendprojectile.hotbarid,
+            shootplayerid: backendprojectile.playerID
 
         })
         shotgun.play()
@@ -170,7 +144,9 @@ socket.on('updateprojectiles', (backendprojectiles)=>{
     else{
         projectiles[id].position.x+=backendprojectile.velocity.x
         projectiles[id].position.y+=backendprojectile.velocity.y
+        
      }
+    // }
     }
 
     for(const id in projectiles){
@@ -229,9 +205,21 @@ socket.on('updatePlayer', (backendPlayers) => {
                 if(id===socket.id){
                     Health.xp=players[id].xp}
             })
-            players[id].roomid = backendPlayer.roomid
             if(players[socket.id]){background.id= players[socket.id].roomid}
             document.querySelector(`div[data-id="${id}"]`).innerHTML= `${backendPlayer.username}: ${backendPlayer.score}`
+
+            if (players[id].spn == 2) {
+                players[id].image = players[id].sprites.left
+            }
+            else if (players[id].spn == 3) {
+                players[id].image = players[id].sprites.right
+            }
+            else if (players[id].spn == 0) {
+                players[id].image = players[id].sprites.up
+            }
+            else if (players[id].spn == 1) {
+                players[id].image = players[id].sprites.down
+            }
         }
     }
         
@@ -272,94 +260,91 @@ window.addEventListener('touchend',touchend)
 
 
 let number,indexnumber
-const collisionsMap = []
-const boundaries = []
-const doormap = []
-const door=[]
+const collisionsMap1 = []
+const collisionsMap0 = []
+const boundaries1 = []
+const boundaries0 = []
+const doormap1 = []
+const doormap0 = []
+const door1=[]
+const door0=[]
 
-convertmap(collisions2,collisionsMap,boundaries,106504,1)//Mapconvertor.js
-convertmap(Door1,doormap,door,106506,2)
+convertmap(collisions2,collisionsMap1,boundaries1,106501,1)//Mapconvertor.js
+convertmap(collisions1,collisionsMap0,boundaries0,36870,1)//Mapconvertor.js
+convertmap(Door1,doormap1,door1,106506,2)
+convertmap(Door0,doormap0,door0,20481,2)
 //================================================================================//
 //=================================ANIMATION======================================//
 //================================================================================//
+let camerax=0 
+let cameray=0
 function animate() {
     c.clearRect(0, 0, canvas.width, canvas.height);
     requestAnimationFrame(animate)
-    background.drawroom();
-    c.drawImage(Hotbar,10,60,80,400)
-    inv.drawitems()
-    c.drawImage(Blink,442,205,20,20)
 
-    for(const id in projectiles){
-        const Projectile=projectiles[id]
-        Projectile.draw()
-    }
-    if(!players[socket.id]){return}
+    if(players[socket.id]){
+    camerax = players[socket.id].position.x - canvas.width/2
+    cameray = players[socket.id].position.y - canvas.height/2}
+
+    background.drawroom(camerax,cameray);
+    // c.drawImage(Blink,442-camerax,205-cameray,20,20)
+
+if(!players[socket.id]){return}
+
+
     for (const id in players) {
         const player = players[id];
-        if (player.spn == 3) {
-            player.image = player.sprites.left
-        }
-        else if (player.spn == 4) {
-            player.image = player.sprites.right
-        }
-        else if (player.spn == 1) {
-            player.image = player.sprites.up
-        }
-        else if (player.spn == 2) {
-            player.image = player.sprites.down
-        }
-        if(player.roomid===players[socket.id].roomid){
-            delete player
-        }
         if(players[id].roomid==players[socket.id].roomid){
-            player.draw();
+            player.draw(camerax,cameray);
             c.font = "bold 15px Comic Sans MS";
-        c.fillStyle="white"
-        c.textAlign= 'center'
-        c.fillText(player.username,player.position.x+player.width/2,player.position.y)
-            if (!players[id].mute) {
-                c.drawImage(microphone, players[id].position.x, players[id].position.y)
+            c.fillStyle="white"
+            c.textAlign= 'center'
+            c.fillText(player.username,player.position.x+player.width/2-camerax,player.position.y-cameray)
+              if (!players[id].mute) {
+                c.drawImage(microphone, player.position.x-camerax, player.position.y-cameray)
             }
+            for(const id in projectiles){
+                const Projectile=projectiles[id]
+                Projectile.draw(camerax,cameray)
+            }
+        
         }
+        
         
         
     }
-
-    // boundaries.forEach(boundary => {boundary.draw()}) 
-    // door.forEach(boundary => {boundary.draw()}) //can be used to locate barrier blocks
-    // foreground.draw()
     let shield = false
+    let moving = true
+    let tocheck
+
+    if(players[socket.id].roomid==1){
+        foreground.drawforeground(camerax,cameray,Foreground1)
+        tocheck = boundaries1
+        doortocheck = door1
+      }
+    else if(players[socket.id].roomid==0){
+        foreground.drawforeground(camerax,cameray,Foreground0)
+        tocheck = boundaries0
+        doortocheck = door0
+    }
+
+
+    
+    c.drawImage(Hotbar,10,60,80,400)
+    inv.drawitems()
 //=================================================//
     Health.draw()
     Resistance.draw()
 
 
-
-
-    c.lineWidth=8
-    c.strokeStyle='red'
-    c.strokeRect(24,(72+42*mousewheelc),50,40);
-
-
-
-
-
-
-
-
-    let moving = true
-
-    let player = players[socket.id]
-    if (!player) { return }
-
-
+    // tocheck.forEach(boundary => {boundary.draw()}) 
+    // doortocheck.forEach(boundary => {boundary.draw()}) //can be used to locate barrier blocks
 
 
 
 for(const id in projectiles){
-for(let i=0 ;i <boundaries.length;i++){
-    const boundary = boundaries[i]
+for(let i=0 ;i <tocheck.length;i++){
+    const boundary = tocheck[i]
     if(rectangularcollisionwithoutwalls({
         rectangle1: projectiles[id],
         rectangle2: {...boundary, position:{x:boundary.position.x + boundary.width/2 ,y:boundary.position.y+ boundary.height/2}
@@ -377,20 +362,17 @@ for(const id in players){
             rectangle1: projectiles[i]
              }
            )
-        ){
-            
-            // if(keys.q.pressed){console.log('knkjbhbh')}
-            socket.emit('projectilecollisionwp',{id:id,pid:i})
-            
-            
-        
+        ){console.log(id,projectiles[i].shootplayerid)
+            if(id!=projectiles[i].shootplayerid){
+                socket.emit('projectilecollisionwp',{id:id,pid:i})
+            }
         }
     }
 }}
 
 for(const id in players){
-    for(let i =0 ; i<door.length; i++){
-        const doorboundary =  door[i]
+    for(let i =0 ; i<doortocheck.length; i++){
+        const doorboundary =  doortocheck[i]
         if(rectangularcollision({
             rectangle1: players[id],
             rectangle2: {...doorboundary, position:{x:doorboundary.position.x ,y:doorboundary.position.y}
@@ -398,25 +380,36 @@ for(const id in players){
              }
            )
         ){
-            players[socket.id].roomid=0
-            socket.emit('roomchange',players[socket.id].roomid)
-            players[socket.id].position.x =canvas.width-130
+            console.log(players[socket.id].roomid)
+            if(players[socket.id].roomid==0){
+                console.log('hello')
+                players[socket.id].position.x=240
+                players[socket.id].roomid=1
+                socket.emit('roomchange',players[socket.id].roomid)
+            }
+            else if(players[socket.id].roomid==1){
+                console.log('hello')
+                players[socket.id].position.x =canvas.width-130
+                players[socket.id].roomid=0
+                 socket.emit('roomchange',players[socket.id].roomid)
+            }
+            console.log(players[socket.id].roomid)
+            
         }
     }
 }
-
 
     walksound.pause()
 
 
  
-    if (keys.w.pressed || touchup === true) {
+    if (keys.w.pressed || touchup === true){
         players[socket.id].moving = true
         players[socket.id].image = players[socket.id].sprites.up
-        for(let i=0 ;i <boundaries.length;i++){
-            const boundary = boundaries[i]
+        for(let i=0 ;i <tocheck.length;i++){
+            const boundary = tocheck[i]
             if(rectangularcollision({
-                rectangle1: player,
+                rectangle1: players[socket.id],
                 rectangle2: {...boundary, position:{x:boundary.position.x ,y:boundary.position.y+5}
                    }
                  }
@@ -427,7 +420,7 @@ for(const id in players){
         players[socket.id].position.y-=5
         walksound.play()
         socket.emit('playerlocation',players[socket.id].position)
-        socket.emit('playersprite','1')
+        socket.emit('playersprite','0')
 
     }
     
@@ -435,8 +428,8 @@ for(const id in players){
     else if (keys.s.pressed || touchdown===true) {
         players[socket.id].moving=true
         players[socket.id].image = players[socket.id].sprites.down
-        for(let i=0 ;i <boundaries.length;i++){
-            const boundary = boundaries[i]
+        for(let i=0 ;i <tocheck.length;i++){
+            const boundary = tocheck[i]
             if(rectangularcollision({
                 rectangle1: players[socket.id],
                 rectangle2: {...boundary, position:{x:boundary.position.x ,y:boundary.position.y-5}
@@ -452,15 +445,15 @@ for(const id in players){
             players[socket.id].position.y+=5
             walksound.play()
             socket.emit('playerlocation',players[socket.id].position)
-            socket.emit('playersprite','2')
+            socket.emit('playersprite','1')
 
     }
     }
     else if (keys.a.pressed|| touchleft===true) {
         players[socket.id].moving=true
         players[socket.id].image = players[socket.id].sprites.left
-        for(let i=0 ;i <boundaries.length;i++){
-            const boundary = boundaries[i]
+        for(let i=0 ;i <tocheck.length;i++){
+            const boundary = tocheck[i]
             if(rectangularcollision({
                 rectangle1: players[socket.id],
                 rectangle2: {...boundary, position:{x:boundary.position.x+5,y:boundary.position.y}
@@ -476,15 +469,15 @@ for(const id in players){
             players[socket.id].position.x-=5
             walksound.play()
             socket.emit('playerlocation',players[socket.id].position)
-            socket.emit('playersprite','3')
+            socket.emit('playersprite','2')
 
         }
     }
     else if (keys.d.pressed|| touchright===true) {
         players[socket.id].moving=true
         players[socket.id].image=players[socket.id].sprites.right
-        for(let i=0 ;i <boundaries.length;i++){
-            const boundary = boundaries[i]
+        for(let i=0 ;i <tocheck.length;i++){
+            const boundary = tocheck[i]
             if(rectangularcollision({
                 rectangle1: players[socket.id],
                 rectangle2: {...boundary, position:{x:boundary.position.x-5,y:boundary.position.y}
@@ -501,7 +494,7 @@ for(const id in players){
             players[socket.id].position.x+=5
             walksound.play()
             socket.emit('playerlocation',players[socket.id].position)
-            socket.emit('playersprite','4')
+            socket.emit('playersprite','3')
 
 
         }
