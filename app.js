@@ -19,14 +19,8 @@ const backendprojectiles = {}
 
 let projectileID=0
 
-
 io.on('connection', (socket)=>{
     console.log('A user connected ')
-    socket.on('initcanavs',({width,height})=>{
-       players[socket.id].canvas={
-        width,height
-       }
-    })
     socket.on('boundaries',(boundaries)=>{
         for(const id in boundaries){
             const boundary = boundaries[id]
@@ -50,9 +44,10 @@ io.on('connection', (socket)=>{
         io.emit('updatePlayer',players)
     })
     socket.on('addusername',(username)=>{
+        
         players[socket.id] ={
-        xx:662,
-        yy:300,
+        xx: 640,
+        yy:400,
         username: username,
         score :0,
         xp:215,
@@ -64,9 +59,12 @@ io.on('connection', (socket)=>{
             d: {pressed: false},
             q: {pressed: false}
         }
+        
     }
     io.emit('updatePlayer', players)
     })
+    
+
     socket.on('roomchange',(id)=>{
         players[socket.id].roomid=id
         io.emit('updatePlayer', players)
@@ -74,14 +72,14 @@ io.on('connection', (socket)=>{
 
     })
 
-    socket.on('shoot', ({ x, y, angle }) => {
+    socket.on('shoot', ({ x, y, angle ,hotbarid}) => {
         projectileID++;
         const velocity = {
             x: Math.cos(angle) * 20,
             y: Math.sin(angle) * 20
         }
         backendprojectiles[projectileID] = {
-            x, y, velocity, playerID: socket.id
+            x, y, velocity, playerID: socket.id,hotbarid
         }
     })
 
@@ -89,9 +87,8 @@ io.on('connection', (socket)=>{
         delete backendprojectiles[id]
     })
     socket.on('projectilecollisionwp',({id,pid})=>{
-        if(id!=socket.id){
         delete backendprojectiles[pid]
-        players[id].xp-=10}
+        players[id].xp-=10
         if(players[id].xp<=0){
             delete players[id]
             players[socket.id].score++
@@ -118,7 +115,7 @@ setInterval(() => {
         backendprojectiles[id].y += backendprojectiles[id].velocity.y
     }
     io.emit('updateprojectiles', backendprojectiles)
-    io.emit('updatePlayer',players)
+    // io.emit('updatePlayer',players)
 },15)
 
 server.listen(port, ()=> {
