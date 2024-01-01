@@ -6,7 +6,6 @@ This is a multiplayer web based game built on html canvas
   <h4>How to initialize it on own computer:-</h4>
        git clone -b sds https://github.com/rajeevk47/domainapp.git
        cd domainapp/
-       npm install nodejs //(if not)
        npm i 
        nodemon app.js
 </pre>
