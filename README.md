@@ -19,7 +19,8 @@ This is a multiplayer web based game built on html canvas
     Tiles -> For map designing
 </pre>
 <pre>
-  This is a multiplayer shooting game which player can play on both mobile and pc as it runs on web and it involves<br> touch detection.This game is not fully made yet it will take some more time but currently basic functionality has been <br>added.<br>Current Functionalities : Player can have many weapons like guns and fireballs for shooting and a healthbar for showing player's <br>health .Player can also travel through one room to another room through door .Player can change their weapon from hotbar<br> either by scrolling or clicking on the weapon. Player havs its username which is asked when game starts.Player can mute or unmute and also can see that who is  muted or unmuted .
+  This is a multiplayer shooting game which player can play on both mobile and pc as it runs on web and it involves<br> touch detection.This game is not fully made yet it will take some more time but currently basic functionality has been <br>added.<br>Current Functionalities : Player can have many weapons like guns and fireballs for shooting and a healthbar for showing player's <br>health .Player can also travel through one room to another room through door .Player can change their weapon from hotbar<br> either by scrolling or clicking on the weapon. Player havs its username which is asked when game starts.Player can mute or unmute 
+  and also can see that who is  muted or unmuted .
 </pre>
 <pre>
   A little overview of game built:-
